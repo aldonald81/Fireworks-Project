@@ -1,4 +1,4 @@
-# Identity Verification KYC Proof of Concept
+# Gen AI Identity Verification KYC Proof of Concept
 
 A proof of concept application for financial services enterprises to perform identity verification within their Know Your Customer (KYC) process using documents such as passports and driver's licenses. The application features a React front-end and a Node.js Express back-end, integrated with the Fireworks AI API.
 
