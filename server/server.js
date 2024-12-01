@@ -3,8 +3,8 @@ const cors = require("cors");
 const path = require("path");
 require("dotenv").config();
 
-// Import routes
 const verifyIdentityRoutes = require("./routes/verifyIdentityRoutes");
+const dataChatRoutes = require("./routes/dataChatRoutes")
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -18,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Use routes
 app.use("/api/verifyIdentity", verifyIdentityRoutes);
+app.use("/api/dataChat", dataChatRoutes)
 
 // Start the server
 app.listen(PORT, () => {
