@@ -59,7 +59,9 @@ const styles = {
     padding: "10px 40px",
     textAlign: "center",
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-    width: "320px",
+    width: "40%",
+    minWidth: '300px',
+    maxWidth: '500px',
     zIndex: 1, // Ensures it appears above the background
     position: "relative",
   },

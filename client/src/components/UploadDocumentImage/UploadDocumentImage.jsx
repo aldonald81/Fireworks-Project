@@ -21,7 +21,7 @@ const UploadDocumentImage = ({
         let imageData = await onImageUpload(file);
 
         if (imageData['isValid'] === 'yes'){
-            setProfileInfo(imageData['data'])
+            setProfileInfo({"customerIdentificationProgam": imageData['data'], "customerDueDiligence": {}})
             setAuthState("success");
             setTimeout(() => {
               setIsAuthenticated(true);

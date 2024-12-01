@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import "./ProfileContainer.css";
 
 const ProfileContainer = ({ profileInfo }) => {
@@ -9,16 +9,36 @@ const ProfileContainer = ({ profileInfo }) => {
       .replace(/^./, (str) => str.toUpperCase()); // Capitalize the first letter
   };
 
+  const bottomRef = useRef(null);
+
+  // Auto-scroll to bottom when profileInfo changes
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [profileInfo]);
+
   return (
     <div className="profile-container">
-      <h2>Profile</h2>
-      <ul className="profile-list">
-        {Object.entries(profileInfo).map(([key, value]) => (
-          <li key={key}>
-            <strong>{formatKey(key)}:</strong> {value}
-          </li>
+      <h2>Profile Information</h2>
+      {/* Wrap the content in a new div */}
+      <div className="profile-content">
+        {Object.entries(profileInfo).map(([sectionKey, sectionValue]) => (
+          <div key={sectionKey} className="profile-section">
+            <h3>{formatKey(sectionKey)}</h3>
+            <ul className="profile-list">
+              {Object.entries(sectionValue).map(([key, value]) => (
+                <li key={key} className="profile-item">
+                  <span className="item-key">{formatKey(key)}:</span>
+                  <span className="item-value">{value}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         ))}
-      </ul>
+        {/* Dummy div to scroll into view */}
+        <div ref={bottomRef} />
+      </div>
     </div>
   );
 };

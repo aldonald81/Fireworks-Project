@@ -21,7 +21,7 @@ const AppRoutes = ({ isAuthenticated, setIsAuthenticated, profileInfo, setProfil
       <Route
         path="/profile"
         element={
-          isAuthenticated ? <ProfileScreen profileInfo={profileInfo} /> : <Navigate to="/auth" replace />
+          isAuthenticated ? <ProfileScreen profileInfo={profileInfo} setProfileInfo={setProfileInfo} /> : <Navigate to="/auth" replace />
         }
       />
       {/* Redirect unknown routes */}
