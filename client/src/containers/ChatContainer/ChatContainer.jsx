@@ -5,7 +5,7 @@ import "./ChatContainer.css";
 
 const ChatContainer = ({profileInfo, setProfileInfo}) => {
   const [inputValue, setInputValue] = useState("");
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([{role: 'assistant', content: "Hey! How's it going? Can you tell me a little about where your live and what you do for work?"}]);
   const [customerDueDiligenceFields, setCustomerDueDiligenceFields] = useState({
     "nationality": { 
       "type": "string", 

@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { addUsage } = require("../utils/trackUsage");
 
 const parseImage = async (imageBase64) => {
   try {
@@ -9,6 +10,12 @@ const parseImage = async (imageBase64) => {
     const responseSchema = {
       type: "object",
       properties: {
+        isValidFormOfIdentification: {
+          type: "string",
+          enum: ["Yes", "No"],
+          description:
+            "Whether or not it is an image of a Passport or Drivers License.",
+        },
         documentType: {
           type: "string",
           enum: ["Passport", "Drivers License"],
@@ -129,16 +136,22 @@ const parseImage = async (imageBase64) => {
             "Indicates whether the individual is a veteran (true for yes, false for no).",
         },
       },
-      required: ["documentType", "fullName", "dateOfBirth", "expirationDate"],
+      required: [
+        "isValidFormOfIdentification",
+        "documentType",
+        "fullName",
+        "dateOfBirth",
+        "expirationDate",
+      ],
     };
 
     system_message =
       "You are an expert at extracting data from different forms of identification such as drivers licenses and passports. You must make sure that every piece of data that you return is present on the provided image. Do NOT hallucinate data or add ANY data from your knowledge. ALL data that you return must be present on the image. If there is no data for a non-required field, do not include the field in the JSON.";
-
+    const model = "accounts/fireworks/models/llama-v3p2-90b-vision-instruct";
     // Payload for the Fireworks API request
     const payload = {
-      model: "accounts/fireworks/models/llama-v3p2-90b-vision-instruct",
-      temperature: 0.6,
+      model: model,
+      temperature: 0.4,
       messages: [
         {
           role: "user",
@@ -170,6 +183,7 @@ const parseImage = async (imageBase64) => {
 
     // Make the API request
     const response = await axios.post(url, payload, { headers });
+    addUsage("verifyData", model, response.data.usage);
     const responseString = response.data.choices[0].message.content;
 
     // Parse and return the response as JSON
@@ -207,17 +221,18 @@ const verifyData = async (data) => {
       required: ["isValid", "reason"],
     };
 
-    const today = getCurrentDate();
+    const today = await getCurrentDate();
 
-    system_message = `You are an expert at identifying fraudulant forms of identification. Specifically, you are aware of common indications of fraudulant identification on passports and drivers licenses such as birth dates before 1915 or in the future, expiration date before ${today}, states not actually in the USA, etc. Note that you are looking at mock forms of identification so the names, zip codes, and addresses may not be real, however, that should not disqualify them. You return a JSON object with whether or not the identification is valid and a reason why (return empty string if identification is valid)`;
-    user_message = `Examine the below data and determine whether it indicates a valid form of identification. Some (but not all) key items to look out for are: \n1. Birth dates before 1915 or in the future \n2. Expiration date before ${today} \n3. States not actually in the USA. \n\nData:\n${JSON.stringify(
+    system_message = `You are an expert at identifying fraudulant and incomplete forms of identification. Specifically, you are aware of common indications of fraudulant identification on passports and drivers licenses such as birth dates before 1915 or in the future, expiration date before ${today}, states not actually in the USA, etc. Also, you make sure that the identification provides Full Name, Date of Birth, and Expiration Date and they are not redacted. Note that you are looking at mock forms of identification so the names, zip codes, and addresses may not be real, however, that should not disqualify them. You return a JSON object with whether or not the identification is valid and a reason why (return empty string if identification is valid)`;
+    user_message = `Examine the below data and determine whether it indicates a valid form of identification. Some (but not all) key items to look out for are: \n1. Birth dates before 1915 or in the future \n2. Expiration date before ${today} \n3. States not actually in the USA \n4. Full Name, Date of Birth, and Expiration Date are not all present and not redacted. \n\nData:\n${JSON.stringify(
       data
     )}`;
-    console.log(user_message);
+    model = "accounts/fireworks/models/llama-v3p1-405b-instruct";
+    // model: "accounts/fireworks/models/llama-v3p2-3b-instruct",
+
     // Payload for the Fireworks API request
     const payload = {
-      model: "accounts/fireworks/models/llama-v3p1-405b-instruct",
-      // model: "accounts/fireworks/models/llama-v3p2-3b-instruct",
+      model: model,
       temperature: 0.5,
       messages: [
         {
@@ -243,6 +258,7 @@ const verifyData = async (data) => {
 
     // Make the API request
     const response = await axios.post(url, payload, { headers });
+    addUsage("verifyData", model, response.data.usage);
     const responseString = response.data.choices[0].message.content;
 
     // Parse and return the response as JSON
@@ -258,9 +274,6 @@ const verifyData = async (data) => {
 };
 
 const dataChat = async (conversation, data, missingData) => {
-  console.log("MISSING")
-  console.log(missingData)
-  console.log(data)
   try {
     // Fireworks API URL
     const url = "https://api.fireworks.ai/inference/v1/chat/completions";
@@ -269,10 +282,10 @@ const dataChat = async (conversation, data, missingData) => {
       data
     )}\n\n Fields that need to be filled include: ${missingData}\n**focus on getting these fields filled in!`;
     messages = [{ role: "system", content: system_message }, ...conversation];
-
+    const model = "accounts/fireworks/models/llama-v3p2-3b-instruct";
     const payload = {
       // model: "accounts/fireworks/models/llama-v3p1-405b-instruct",
-      model: "accounts/fireworks/models/llama-v3p2-3b-instruct",
+      model: model,
       temperature: 0.5,
       messages: messages,
     };
@@ -285,6 +298,7 @@ const dataChat = async (conversation, data, missingData) => {
 
     // Make the API request
     const response = await axios.post(url, payload, { headers });
+    addUsage("dataChat", model, response.data.usage);
     const responseString = response.data.choices[0].message.content;
 
     conversation.push({ role: "assistant", content: responseString });
@@ -336,6 +350,7 @@ const extractDataFromChat = async (conversation) => {
           "Unemployed",
           "Retired",
           "Student",
+          "Other",
         ],
         description: "The individual's current employment status.",
       },
@@ -447,7 +462,7 @@ const extractDataFromChat = async (conversation) => {
         description:
           "Disclosure of any past financial crimes or regulatory violations.",
       },
-    }
+    };
     const responseSchema = {
       type: "object",
       properties: properties,
@@ -457,17 +472,23 @@ const extractDataFromChat = async (conversation) => {
     system_message = {
       role: "system",
       content:
-        "You are an expert at extracting data from conversations. Your goal is to look at a conversation and return a JSON with data based on what you find in the conversation. Follow the Data Schema to understand what data you are looking for and what format to put it in. If a field is unknown based on the conversation, do NOT include it in the returned JSON. Do not make any guesses or hallucinations!",
+        "You are an expert at extracting data from conversations. Your goal is to look at a conversation and return a JSON with data based on what you find in the conversation. For example, if the user has not indicated whether or not they are politically exposed and the assistant hasn't asked about it, pepStatus should NOT be included. Follow the Data Schema to understand what data you are looking for and what format to put it in. If a field is unknown based on the conversation, do NOT include it in the returned JSON. Do not make any guesses or hallucinations!",
     };
-    user_message = {role: "user", content: `Extract all data that you can find from the conversation up until this point that fits into the Data Schema. ONLY include data that the user has provided!\n\nData Schema:\n${JSON.stringify(properties)}`}
+    user_message = {
+      role: "user",
+      content: `Extract all data that you can find from the conversation up until this point that fits into the Data Schema. ONLY include data that the user has provided! If the user has not provided the data with reasonable certainty and clarity (99% of the time people would identify it as the same thing), you should not include it in the JSON. For example, if the user has not indicated their salary, do not guestimate it.\n\nData Schema:\n${JSON.stringify(
+        properties
+      )}`,
+    };
+    const model = "accounts/fireworks/models/llama-v3p1-405b-instruct";
+    // model: "accounts/fireworks/models/llama-v3p1-70b-instruct",
+    // model: "accounts/fireworks/models/firefunction-v2",
+    // model: "accounts/fireworks/models/llama-v3p2-3b-instruct",
 
     // Payload for the Fireworks API request
     const payload = {
-      // model: "accounts/fireworks/models/llama-v3p1-70b-instruct",
-      // model: "accounts/fireworks/models/firefunction-v2",
-      // model: "accounts/fireworks/models/llama-v3p2-3b-instruct",
-      model: "accounts/fireworks/models/llama-v3p1-405b-instruct",
-      temperature: 0.2,
+      model: model,
+      temperature: 0.4,
       messages: [system_message, ...conversation, user_message],
       response_format: {
         type: "json_object",
@@ -483,13 +504,12 @@ const extractDataFromChat = async (conversation) => {
 
     // Make the API request
     const response = await axios.post(url, payload, { headers });
+    addUsage("extractDataFromChat", model, response.data.usage);
     const responseString = response.data.choices[0].message.content;
 
     // Parse and return the response as JSON
     const responseObject = JSON.parse(responseString);
 
-    console.log("DATAA EXTRACTED")
-    console.log(responseObject)
     return responseObject;
   } catch (error) {
     console.error(

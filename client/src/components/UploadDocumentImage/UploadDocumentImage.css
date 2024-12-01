@@ -1,0 +1,70 @@
+/* Container for the upload icon */
+.icon-container {
+  display: flex;
+  justify-content: center;
+}
+
+/* Label styling for the upload icon */
+.upload-label {
+  cursor: pointer;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+/* File input styling to hide the default input */
+.file-input {
+  display: none; /* Hides the default file input */
+}
+
+#upload-icon {
+  margin-top: 40%;
+}
+
+#card-failure-retry {
+  border-radius: 8px;
+  border: #878787 2px solid;
+  padding: 8px 12px;
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: Arial, sans-serif;
+  cursor: pointer;
+}
+
+.retry-container {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Space between icon and text */
+}
+
+.retry-icon {
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.retry-text {
+  display: flex;
+  flex-direction: column;
+  color: #333;
+  text-align: left;
+}
+
+.retry-title {
+  font-weight: bold;
+  font-size: 16px;
+  margin: 0;
+  color: #333;
+}
+
+.retry-subtitle {
+  font-size: 12px;
+  opacity: 0.8; /* Lighter text for subtitle */
+  margin-top: 4px;
+  color: #333;
+}
