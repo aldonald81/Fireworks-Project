@@ -1,9 +1,9 @@
 .card {
-    background: linear-gradient(145deg, #f9f9f9, #eaeaea); /* Subtle off-white gradient */
+    background: linear-gradient(145deg, #f9f9f9, #eaeaea); 
     border-radius: 16px;
     padding: 20px 40px;
     text-align: center;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.08); /* Softer, minimal shadow */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.08); 
     width: 30%;
     z-index: 1;
     max-width: 450px;
@@ -13,23 +13,21 @@
     min-height: 200px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Ensures proper spacing between title, icon, and subtitle */
+    justify-content: space-between; 
     align-items: center;
-    color: #333; /* Dark gray text for good contrast */
-    border: 1px solid rgba(0, 0, 0, 0.05); /* Subtle border to frame the card */
+    color: #333; 
+    border: 1px solid rgba(0, 0, 0, 0.05); 
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   
-  /* Title styling: stays at the top */
   .card-title {
     font-weight: bold;
-    margin-bottom: 0; /* Removes extra spacing */
+    margin-bottom: 0; 
     color: #333;
   }
   
-  /* Icon container styling: takes up the rest of the available space */
   .card-icon {
-    flex-grow: 1; /* Ensures it takes up all available vertical space */
+    flex-grow: 1; 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -37,9 +35,8 @@
     color: #333;
   }
   
-  /* Subtitle container: stays at the bottom */
   .card-subtitle-container {
-    margin-top: auto; /* Pushes it to the bottom of the card */
+    margin-top: auto; 
   }
   
   .card-subtitle {

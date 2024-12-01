@@ -1,19 +1,16 @@
-/* Container for the upload icon */
 .icon-container {
   display: flex;
   justify-content: center;
 }
 
-/* Label styling for the upload icon */
 .upload-label {
   cursor: pointer;
   display: inline-block;
   border-radius: 50%;
 }
 
-/* File input styling to hide the default input */
 .file-input {
-  display: none; /* Hides the default file input */
+  display: none; 
 }
 
 #upload-icon {
@@ -36,7 +33,7 @@
 .retry-container {
   display: flex;
   align-items: center;
-  gap: 12px; /* Space between icon and text */
+  gap: 12px; 
 }
 
 .retry-icon {
@@ -64,7 +61,7 @@
 
 .retry-subtitle {
   font-size: 12px;
-  opacity: 0.8; /* Lighter text for subtitle */
+  opacity: 0.8; 
   margin-top: 4px;
   color: #333;
 }

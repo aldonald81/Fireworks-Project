@@ -3,7 +3,6 @@ const cors = require("cors");
 const path = require("path");
 require("dotenv").config();
 
-// Import routes
 const verifyIdentityRoutes = require("./routes/verifyIdentityRoutes");
 const dataChatRoutes = require("./routes/dataChatRoutes")
 

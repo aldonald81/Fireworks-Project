@@ -140,7 +140,6 @@ const ChatContainer = ({profileInfo, setProfileInfo}) => {
 
   const updateProfileData = async(conversation) => {
     try {
-      // Send the conversation to the API to get a response using axios
       const response = await axios.post("http://localhost:4000/api/dataChat/parseData", {
         conversation,
       });
@@ -178,16 +177,13 @@ const ChatContainer = ({profileInfo, setProfileInfo}) => {
       content: inputValue,
     };
 
-    // Add user's message to messages
     setMessages((prevMessages) => [...prevMessages, userMessage]);
 
-    // Clear input
     setInputValue("");
 
     let missingFields = await getMissingDataFields();
 
     try {
-      // Send the conversation to the API to get a response using axios
       const response = await axios.post("http://localhost:4000/api/dataChat/chat", {
         conversation: [...messages, userMessage],
         data: customerDueDiligenceFields,

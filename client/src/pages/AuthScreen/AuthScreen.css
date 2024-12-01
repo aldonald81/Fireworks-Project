@@ -5,7 +5,7 @@
     align-items: center;
     position: relative;
     overflow: hidden;
-    background-color: #f9f9f9; /* Subtle light gray for a clean look */
+    background-color: #f9f9f9; 
   }
   
   .auth-background {
@@ -26,7 +26,7 @@
     font-size: 28px;
     font-weight: bold;
     color: white;
-    z-index: 2; /* Keeps the brand logo above the background */
+    z-index: 2; 
     font-family: "Arial", sans-serif;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
   }

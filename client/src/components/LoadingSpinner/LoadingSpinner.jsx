@@ -1,5 +1,5 @@
 import React from "react";
-import "./LoadingSpinner.css"; // Import the CSS file
+import "./LoadingSpinner.css"; 
 
 const colors = [
   "#ffe08c", // Pale yellow

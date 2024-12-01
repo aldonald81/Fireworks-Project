@@ -11,7 +11,7 @@ const UploadDocumentImage = ({
   setProfileInfo,
   setVerificationError,
 }) => {
-  const fileInputRef = useRef(null); // Ref to access the file input
+  const fileInputRef = useRef(null); 
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -19,7 +19,6 @@ const UploadDocumentImage = ({
       const allowedExtensions = ["image/jpeg", "image/jpg", "image/png"];
       if (allowedExtensions.includes(file.type)) {
         setError("");
-        // Call the upload handler
         setAuthState("uploading");
 
         let imageData = await onImageUpload(file);
@@ -45,7 +44,6 @@ const UploadDocumentImage = ({
 
   const onImageUpload = async (file) => {
     try {
-      // Create FormData to handle the file upload
       const formData = new FormData();
       formData.append("image", file);
 
@@ -73,7 +71,7 @@ const UploadDocumentImage = ({
 
   const handleRetryClick = () => {
     if (fileInputRef.current) {
-      fileInputRef.current.click(); // Trigger the hidden file input's click event
+      fileInputRef.current.click(); 
     }
   };
 
@@ -99,7 +97,7 @@ const UploadDocumentImage = ({
             accept=".jpeg, .jpg, .png"
             className="file-input"
             onChange={handleFileChange}
-            style={{ display: "none" }} // Hide the file input
+            style={{ display: "none" }} 
           />
         </div>
       ) : (

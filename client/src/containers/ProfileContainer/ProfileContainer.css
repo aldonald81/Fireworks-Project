@@ -1,4 +1,3 @@
-/* Container styling */
 .profile-container {
   display: flex;
   flex-direction: column;
@@ -6,18 +5,15 @@
   padding: 20px;
   background-color: #ffffff;
   border-radius: 10px;
-  /* Remove overflow-y: auto from here */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* New content styling */
 .profile-content {
   flex: 1;
   overflow-y: auto;
-  scroll-behavior: smooth; /* Smooth scrolling */
+  scroll-behavior: smooth;
 }
 
-/* Main heading */
 .profile-container h2 {
   margin-top: 0;
   font-size: 24px;
@@ -26,7 +22,6 @@
   padding-bottom: 10px;
 }
 
-/* Section styling */
 .profile-section {
   margin-top: 20px;
 }
@@ -39,7 +34,6 @@
   padding-bottom: 5px;
 }
 
-/* Profile list styling */
 .profile-list {
   list-style: none;
   padding: 0;
@@ -69,7 +63,6 @@
   text-align: right;
 }
 
-/* Scrollbar styling */
 .profile-content::-webkit-scrollbar {
   width: 8px;
 }

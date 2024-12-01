@@ -1,11 +1,10 @@
 const axios = require("axios");
 const { addUsage } = require("../utils/trackUsage");
 
+const url = "https://api.fireworks.ai/inference/v1/chat/completions";
+
 const parseImage = async (imageBase64) => {
   try {
-    // Fireworks API URL
-    const url = "https://api.fireworks.ai/inference/v1/chat/completions";
-
     // Define the JSON schema for the response
     const responseSchema = {
       type: "object",
@@ -148,6 +147,7 @@ const parseImage = async (imageBase64) => {
     system_message =
       "You are an expert at extracting data from different forms of identification such as drivers licenses and passports. You must make sure that every piece of data that you return is present on the provided image. Do NOT hallucinate data or add ANY data from your knowledge. ALL data that you return must be present on the image. If there is no data for a non-required field, do not include the field in the JSON.";
     const model = "accounts/fireworks/models/llama-v3p2-90b-vision-instruct";
+
     // Payload for the Fireworks API request
     const payload = {
       model: model,
@@ -181,9 +181,8 @@ const parseImage = async (imageBase64) => {
       Authorization: `Bearer ${process.env.FIREWORKS_API_KEY}`,
     };
 
-    // Make the API request
     const response = await axios.post(url, payload, { headers });
-    addUsage("verifyData", model, response.data.usage);
+    // addUsage("verifyData", model, response.data.usage);
     const responseString = response.data.choices[0].message.content;
 
     // Parse and return the response as JSON
@@ -208,10 +207,6 @@ const getCurrentDate = async () => {
 
 const verifyData = async (data) => {
   try {
-    // Fireworks API URL
-    const url = "https://api.fireworks.ai/inference/v1/chat/completions";
-
-    // Define the JSON schema for the response
     const responseSchema = {
       type: "object",
       properties: {
@@ -230,7 +225,6 @@ const verifyData = async (data) => {
     model = "accounts/fireworks/models/llama-v3p1-405b-instruct";
     // model: "accounts/fireworks/models/llama-v3p2-3b-instruct",
 
-    // Payload for the Fireworks API request
     const payload = {
       model: model,
       temperature: 0.5,
@@ -258,7 +252,7 @@ const verifyData = async (data) => {
 
     // Make the API request
     const response = await axios.post(url, payload, { headers });
-    addUsage("verifyData", model, response.data.usage);
+    // addUsage("verifyData", model, response.data.usage);
     const responseString = response.data.choices[0].message.content;
 
     // Parse and return the response as JSON
@@ -275,9 +269,6 @@ const verifyData = async (data) => {
 
 const dataChat = async (conversation, data, missingData) => {
   try {
-    // Fireworks API URL
-    const url = "https://api.fireworks.ai/inference/v1/chat/completions";
-
     system_message = `You are a friendly financial adviser working to collect all KYC (Know Your Customer) data from a customer sitting in front of you. You should have a conversation with them in order to get them to tell you all that you need. Your goal is to make sure that all of the data fields get filled (listed below). However, you should do this within a natural, concise conversation. I will take care of parsing the data out in a structured format. \nData:\n${JSON.stringify(
       data
     )}\n\n Fields that need to be filled include: ${missingData}\n**focus on getting these fields filled in!`;
@@ -296,9 +287,8 @@ const dataChat = async (conversation, data, missingData) => {
       Authorization: `Bearer ${process.env.FIREWORKS_API_KEY}`,
     };
 
-    // Make the API request
     const response = await axios.post(url, payload, { headers });
-    addUsage("dataChat", model, response.data.usage);
+    // addUsage("dataChat", model, response.data.usage);
     const responseString = response.data.choices[0].message.content;
 
     conversation.push({ role: "assistant", content: responseString });
@@ -315,10 +305,6 @@ const dataChat = async (conversation, data, missingData) => {
 
 const extractDataFromChat = async (conversation) => {
   try {
-    // Fireworks API URL
-    const url = "https://api.fireworks.ai/inference/v1/chat/completions";
-
-    // Define the JSON schema for the response
     const properties = {
       nationality: {
         type: "string",
@@ -485,7 +471,6 @@ const extractDataFromChat = async (conversation) => {
     // model: "accounts/fireworks/models/firefunction-v2",
     // model: "accounts/fireworks/models/llama-v3p2-3b-instruct",
 
-    // Payload for the Fireworks API request
     const payload = {
       model: model,
       temperature: 0.4,
@@ -502,12 +487,10 @@ const extractDataFromChat = async (conversation) => {
       Authorization: `Bearer ${process.env.FIREWORKS_API_KEY}`,
     };
 
-    // Make the API request
     const response = await axios.post(url, payload, { headers });
-    addUsage("extractDataFromChat", model, response.data.usage);
+    // addUsage("extractDataFromChat", model, response.data.usage);
     const responseString = response.data.choices[0].message.content;
 
-    // Parse and return the response as JSON
     const responseObject = JSON.parse(responseString);
 
     return responseObject;
