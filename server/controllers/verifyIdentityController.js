@@ -20,7 +20,7 @@ const authenticateWithImage = async (req, res) => {
       const imageBase64 = fs.readFileSync(filePath, { encoding: "base64" });
   
       const imageDataRes = await parseImage(imageBase64);
-      console.log(imageDataRes)
+      // console.log(imageDataRes)
       if (imageDataRes['isValidFormOfIdentification'] == 'No'){
         return res.status(200).json({isValid: "no", reason: "Not a valid form of authentication"})
       }
