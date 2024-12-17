@@ -14,33 +14,47 @@ const UploadDocumentImage = ({
   const fileInputRef = useRef(null); 
 
   const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const allowedExtensions = ["image/jpeg", "image/jpg", "image/png"];
-      if (allowedExtensions.includes(file.type)) {
-        setError("");
-        setAuthState("uploading");
-
-        let imageData = await onImageUpload(file);
-
-        if (imageData["isValid"] === "yes") {
-          setProfileInfo({
-            customerIdentificationProgam: imageData["data"],
-            customerDueDiligence: {},
-          });
-          setAuthState("success");
-          setTimeout(() => {
-            setIsAuthenticated(true);
-          }, 1500);
-        } else {
-          setAuthState("failure");
-          setVerificationError(imageData["reason"]);
-        }
-      } else {
-        setError("Only JPEG, JPG, or PNG files are allowed.");
+    try {
+      const file = e.target.files[0];
+  
+      if (!file) {
+        setError("No file selected. Please upload a valid image file.");
+        return;
       }
+  
+      const allowedExtensions = ["image/jpeg", "image/jpg", "image/png"];
+      if (!allowedExtensions.includes(file.type)) {
+        setError("Only JPEG, JPG, or PNG files are allowed.");
+        return;
+      }
+  
+      setError("");
+      setAuthState("uploading");
+  
+      const imageData = await onImageUpload(file);
+  
+      if (imageData && imageData["isValid"] === "yes") {
+        setProfileInfo({
+          customerIdentificationProgam: imageData["data"],
+          customerDueDiligence: {},
+        });
+        setAuthState("success");
+        setTimeout(() => {
+          setIsAuthenticated(true);
+        }, 1500);
+      } else {
+        setAuthState("failure");
+        setVerificationError(
+          imageData?.reason || "Image verification failed. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("Error during file upload:", error);
+      setAuthState("failure");
+      setError("An unexpected error occurred. Please try again later.");
     }
   };
+  
 
   const onImageUpload = async (file) => {
     try {

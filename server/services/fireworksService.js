@@ -269,7 +269,7 @@ const verifyData = async (data) => {
 
 const dataChat = async (conversation, data, missingData) => {
   try {
-    system_message = `You are a friendly financial adviser working to collect all KYC (Know Your Customer) data from a customer sitting in front of you. You should have a conversation with them in order to get them to tell you all that you need. Your goal is to make sure that all of the data fields get filled (listed below). However, you should do this within a natural, concise conversation. I will take care of parsing the data out in a structured format. \nData:\n${JSON.stringify(
+    system_message = `You are a friendly financial adviser working to collect all KYC (Know Your Customer) data from a customer sitting in front of you. You should have a conversation with them in order to get them to tell you all that you need. Your goal is to make sure that all of the data fields get filled (listed below). However, you should do this within a natural sounding conversation. The conversation should be very back and forth, so make sure not to overload the user with questions in any given response. Also, avoid including 'fluff' (ie repeating previous user answers or being overly conversational) in your messages. I will take care of parsing the data out in a structured format. \nData:\n${JSON.stringify(
       data
     )}\n\n Fields that need to be filled include: ${missingData}\n**focus on getting these fields filled in!`;
     messages = [{ role: "system", content: system_message }, ...conversation];
@@ -277,7 +277,7 @@ const dataChat = async (conversation, data, missingData) => {
     const payload = {
       // model: "accounts/fireworks/models/llama-v3p1-405b-instruct",
       model: model,
-      temperature: 0.5,
+      temperature: 0.7,
       messages: messages,
     };
 
